@@ -1,10 +1,14 @@
 package com.ai.project1.gemini_chat.security;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -39,6 +43,25 @@ public class SecurityConfig {
         return source;
     }
     
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(List.of(frontendUrl)); // Allow frontend
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                config.setAllowCredentials(true);
+                return config;
+            }))
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for testing
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("**").permitAll()
+                .anyRequest().authenticated()
+            );
+
+        return http.build();
+    }
    
     
     @Bean
