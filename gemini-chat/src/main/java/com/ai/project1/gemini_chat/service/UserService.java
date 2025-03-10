@@ -79,4 +79,21 @@ public class UserService implements UserDetailsService {
 	            userRepository.save(user);    // Save the updated user back to the database
 	        }
 	    }
+	    
+	    public User updateUserProfile(Long userId, String newUsername, String newFullName) {
+	    	User user = userRepository.findById(userId)
+	    			.orElseThrow(() -> new RuntimeException("User Not found"));
+	    	
+	    	if(newUsername != null && !newUsername.isEmpty() && !user.getUsername().equals(newUsername)) {
+	    		if(userRepository.findByUsername(newUsername).isPresent()) {
+	    			  throw new RuntimeException("Username already taken");
+	    		}
+	    		user.setUsername(newUsername);
+	    	}
+	    	
+	    	user.setFullName(newFullName);
+	    	
+	    	return userRepository.save(user);
+	    }
+	    
 }
