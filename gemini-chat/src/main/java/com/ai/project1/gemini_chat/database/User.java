@@ -43,11 +43,7 @@ public class User {
 	private String email;
 	
 	@NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    @Pattern(
-        regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]+$",
-        message = "Password must contain at least 1 letter and 1 numeric digit"
-    )
+    @Size(min = 5, message = "Password must be at least 5 characters long")
 	@Column(nullable = false)
 	private String password;
 
