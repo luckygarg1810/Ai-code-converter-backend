@@ -45,7 +45,7 @@ public class AuthService {
 	            throw new RuntimeException("Username or email already exists");
 	        }
 		 
-		 User user = new User(fullName, username,email, passwordEncoder.encode(password), PlanType.FREE, 0);
+		 User user = new User(fullName, username,email, passwordEncoder.encode(password), PlanType.FREE, 0, null);
 		 userRepository.save(user);
 	 }
 

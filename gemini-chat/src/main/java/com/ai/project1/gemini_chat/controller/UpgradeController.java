@@ -1,21 +1,14 @@
 package com.ai.project1.gemini_chat.controller;
 
-import java.util.Map;
-
-
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ai.project1.gemini_chat.database.PlanType;
 import com.ai.project1.gemini_chat.service.RazorpayService;
 import com.ai.project1.gemini_chat.service.UserService;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -33,7 +26,6 @@ public class UpgradeController {
 			double amount = Double.parseDouble(request.get("amount").toString());
 			String currency = request.get("currency").toString();
 			JSONObject order = razorpayService.createOrder(amount, currency);
-			System.out.println(order.toString());
 			return ResponseEntity.ok(order.toString());
 			
 		} catch (Exception e) {
@@ -49,12 +41,10 @@ public class UpgradeController {
 	            String orderId = paymentDetails.get("razorpay_order_id").toString();
 	            String signature = paymentDetails.get("razorpay_signature").toString();
 	            boolean isAnnual = Boolean.parseBoolean(paymentDetails.get("isAnnual").toString());
-	            String planTypeString = (String) paymentDetails.get("planType"); 
-
-
+	            String planTypeString = (String) paymentDetails.get("planType");
 	            PlanType planType = PlanType.valueOf(planTypeString.toUpperCase());
-	            
-	     boolean isPaymentValid = razorpayService.verifyPaymentSignature(paymentId, orderId, signature);
+
+				boolean isPaymentValid = razorpayService.verifyPaymentSignature(paymentId, orderId, signature);
 	         
 	     if(isPaymentValid) {
 	    	userService.updateUserPlan(userId, planType, isAnnual);

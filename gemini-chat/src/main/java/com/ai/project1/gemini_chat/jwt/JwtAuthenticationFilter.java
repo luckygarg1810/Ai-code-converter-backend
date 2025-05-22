@@ -1,13 +1,13 @@
 package com.ai.project1.gemini_chat.jwt;
 
 
-import java.io.IOException;
-
-import javax.servlet.annotation.WebFilter;
-
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.annotation.WebFilter;
+import java.io.IOException;
 
 @WebFilter(urlPatterns = "/api/*")  // Apply filter to all API endpoints
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -28,9 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 	@Override
-	protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
-			jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain)
+	protected void doFilterInternal(@NotNull jakarta.servlet.http.HttpServletRequest request,
+									@NotNull jakarta.servlet.http.HttpServletResponse response, @NotNull jakarta.servlet.FilterChain filterChain)
 			throws jakarta.servlet.ServletException, IOException {
+
 		  String token = extractJwtFromRequest(request);
 
 	        if (token != null && jwtTokenProvider.validateToken(token)) {

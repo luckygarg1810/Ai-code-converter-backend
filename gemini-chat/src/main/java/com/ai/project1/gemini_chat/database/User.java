@@ -16,8 +16,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -54,125 +60,11 @@ public class User {
     @Column(nullable = false)
     private int usedTokens =0;
 
+	@Column
     private LocalDate planExpiryDate;
-    
-    @Column(nullable = true)
-    private String provider;
-    
-    @Column(nullable = true, unique = true)
-    private String providerId;
-    
-    
-    public User( String fullName, String username, String email, String password,
-    		PlanType planType, int usedTokens) {
-		super();
-		this.fullName = fullName;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.planType = planType;
-		this.usedTokens = usedTokens;
+
+	public User(String fullName, String username, String email, String encode, PlanType free, int usedTokens,
+				LocalDate planExpiryDate) {
+
 	}
-    
-    public User(String fullName, String email, String provider, String providerId, PlanType planType) {
-        this.fullName = fullName;
-        this.email = email;
-        this.provider = provider;
-        this.providerId = providerId;
-        this.planType = planType;
-        this.username = email.split("@")[0];
-        this.password = email+"oauth_user";
-    }
-
-    
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", fullName=" + fullName + ", username=" + username + ", email=" + email
-				+ ", password=" + password + "]";
-	}
-
-	public User() {
-	}
-
-	public PlanType getPlanType() {
-		return planType;
-	}
-
-	public void setPlanType(PlanType planType) {
-		this.planType = planType;
-	}
-
-	public int getUsedTokens() {
-		return usedTokens;
-	}
-
-	public void setUsedTokens(int usedTokens) {
-		this.usedTokens = usedTokens;
-	}
-
-
-	public LocalDate getPlanExpiryDate() {
-		return planExpiryDate;
-	}
-
-	public void setPlanExpiryDate(LocalDate planExpiryDate) {
-		this.planExpiryDate = planExpiryDate;
-	}
-
-	public String getProvider() {
-		return provider;
-	}
-
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
-
-	public String getProviderId() {
-		return providerId;
-	}
-
-	public void setProviderId(String providerId) {
-		this.providerId = providerId;
-	}
-
 }

@@ -2,7 +2,6 @@ package com.ai.project1.gemini_chat.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-
 import org.springframework.stereotype.Component;
 
 import javax.crypto.KeyGenerator;
@@ -13,9 +12,6 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-
-  
-
     private SecretKey secretKey;
 
     public JwtTokenProvider() throws Exception {
@@ -27,7 +23,7 @@ public class JwtTokenProvider {
 
     // Generate JWT token
     public String generateToken(String username) {
-        long expirationTime = 86400000; // 1 day in milliseconds
+        long expirationTime = 864000000; // 10 days in milliseconds
 
         return Jwts.builder()
                 .setSubject(username)

@@ -1,12 +1,13 @@
 package com.ai.project1.gemini_chat.service;
 
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.Utils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.razorpay.Order;
-import com.razorpay.RazorpayClient;
-import com.razorpay.Utils;
+import java.math.BigDecimal;
 
 
 @Service
@@ -17,8 +18,8 @@ public class RazorpayService {
     @Value("${razorpay.key_secret}")
     private String keySecret;
 
-    @Value("${razorpay.key_id}") // Inject Razorpay key ID from properties
-    private String keyId;  // Add keyId here
+    @Value("${razorpay.key_id}")
+    private String keyId;
     
     // Constructor initializing the Razorpay client with keyId and keySecret
     public RazorpayService(@Value("${razorpay.key_id}") String keyId,
@@ -44,6 +45,7 @@ public class RazorpayService {
         return response;
     }
 
+
     // Verify the payment signature
     public boolean verifyPaymentSignature(String paymentId, String orderId, String signature) throws Exception {
         JSONObject attributes = new JSONObject();
@@ -51,8 +53,6 @@ public class RazorpayService {
         attributes.put("razorpay_payment_id", paymentId);
         attributes.put("razorpay_order_id", orderId);
         attributes.put("razorpay_signature", signature);
-        System.out.println(signature);
-        System.out.println(attributes);
         
         return Utils.verifyPaymentSignature(attributes, keySecret);  // Correct verification method
     }

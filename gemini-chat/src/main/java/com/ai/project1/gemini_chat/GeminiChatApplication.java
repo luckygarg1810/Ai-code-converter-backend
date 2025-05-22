@@ -17,9 +17,5 @@ public class GeminiChatApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GeminiChatApplication.class, args);
 	}
-
-	@Value("${frontend.url}")
-	private String frontendUrl;
-
-
+	
 }

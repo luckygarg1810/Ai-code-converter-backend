@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @Service
-public class CodeConvertService {
+public class ConversionService {
 
 	@Value("${gemini.api.url}")
 	private String geminiApiUrl;
@@ -26,7 +26,7 @@ public class CodeConvertService {
 	private static final int FREE_PLAN_LIMIT = 100;
 	private static final int BASE_PLAN_LIMIT = 100;
 
-	public CodeConvertService(WebClient.Builder webClient, UserService userService, UserRepository userRepository) {
+	public ConversionService(WebClient.Builder webClient, UserService userService, UserRepository userRepository) {
 		this.webClient = webClient.build();
 		this.userRepository = userRepository;
 		this.userService = userService;

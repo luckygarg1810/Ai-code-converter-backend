@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.ai.project1.gemini_chat.jwt.JwtTokenProvider;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -57,7 +58,6 @@ public class UserService implements UserDetailsService {
 					.orElseThrow(() -> new RuntimeException("User not found"));
 		}
 
-
 	    public User findUserById(Long userId) {
 	        return userRepository.findById(userId).orElse(null);  // Returns null if user is not found
 	    }
@@ -66,32 +66,39 @@ public class UserService implements UserDetailsService {
 	        return userRepository.findByEmail(email).orElse(null);
 	    }
 
-	    public User findByEmailAndProvider(String email, String provider) {
-	        return userRepository.findByEmailAndProvider(email, provider).orElse(null);
-	    }
-
+		@Transactional
 	    public void updateUserPlan(Long userId, PlanType planType, boolean isAnnual) {
+			if (userId == null || planType == null) {
+				throw new IllegalArgumentException("User ID and plan type cannot be null");
+			}
+
 	    	 User user = userRepository.findById(userId)
 	                 .orElseThrow(() -> new RuntimeException("User not found"));
-	    	 
-	    	 LocalDate currentDate = LocalDate.now();
-	    	 LocalDate newExpiryDate;
-	    	 
-	    	 if(isAnnual) {
-	    		 newExpiryDate = currentDate.plusYears(1);
-	    	 }
-	    	 else {
-	    		 newExpiryDate = currentDate.plusMonths(1);
-	    	 }
-	    	 
-	        if (user != null) {
+
+			LocalDate newExpiryDate = calculatePlanExpiryDate(isAnnual);
+
+	        if (!planType.equals(user.getPlanType()) || !newExpiryDate.equals(user.getPlanExpiryDate())) {
 	            user.setPlanType(planType);// Update the user's plan
 	            user.setPlanExpiryDate(newExpiryDate);
 	            userRepository.save(user);    // Save the updated user back to the database
 	        }
 	    }
+
+		private LocalDate calculatePlanExpiryDate(boolean isAnnual){
+			LocalDate currentDate = LocalDate.now();
+
+			if(isAnnual) {
+				return currentDate.plusYears(1);
+			}
+			else {
+				return currentDate.plusMonths(1);
+			}
+		}
 	    
 	    public User updateUserProfile(Long userId, String newUsername, String newFullName) {
+			if (userId == null) {
+				throw new IllegalArgumentException("User ID cannot be null");
+			}
 	    	User user = userRepository.findById(userId)
 	    			.orElseThrow(() -> new RuntimeException("User Not found"));
 	    	
@@ -101,9 +108,9 @@ public class UserService implements UserDetailsService {
 	    		}
 	    		user.setUsername(newUsername);
 	    	}
-	    	
-	    	user.setFullName(newFullName);
-	    	
+			if(newFullName != null && !newFullName.isEmpty() && !user.getFullName().equals(newFullName)) {
+				user.setFullName(newFullName);
+			}
 	    	return userRepository.save(user);
 	    }
 	    

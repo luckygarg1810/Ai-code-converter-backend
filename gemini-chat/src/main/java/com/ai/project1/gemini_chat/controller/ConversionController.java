@@ -1,19 +1,17 @@
 package com.ai.project1.gemini_chat.controller;
 
 import com.ai.project1.gemini_chat.request.QuestionRequest;
-import com.ai.project1.gemini_chat.service.CodeConvertService;
+import com.ai.project1.gemini_chat.service.ConversionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/")
 @AllArgsConstructor
-public class AiController {
+public class ConversionController {
 
-	private final CodeConvertService codeConvertService;
+	private final ConversionService codeConvertService;
 	
 	@PostMapping("/convertCode")
 	public ResponseEntity<String> askQuestions(@RequestBody QuestionRequest request,
