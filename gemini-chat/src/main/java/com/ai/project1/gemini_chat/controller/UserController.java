@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.project1.gemini_chat.auth.UpdateUserProfileRequest;
-import com.ai.project1.gemini_chat.auth.UserDetailsDto;
+import com.ai.project1.gemini_chat.request.UpdateUserProfileRequest;
+import com.ai.project1.gemini_chat.request.UserDetailsDto;
 import com.ai.project1.gemini_chat.database.User;
 import com.ai.project1.gemini_chat.service.UserService;
 

@@ -1,16 +1,16 @@
 package com.ai.project1.gemini_chat.service;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
+import com.ai.project1.gemini_chat.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ai.project1.gemini_chat.auth.UserDetailsDto;
+import com.ai.project1.gemini_chat.request.UserDetailsDto;
 import com.ai.project1.gemini_chat.database.PlanType;
 import com.ai.project1.gemini_chat.database.User;
 import com.ai.project1.gemini_chat.repository.UserRepository;
@@ -20,6 +20,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 	
 	 @Override
 	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,10 +30,7 @@ public class UserService implements UserDetailsService {
 	                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
 	    }
-	
-	 
-	 
-	 
+
 	 
 	    public UserDetailsDto getUserDetails(Long userId) {
 	        User user = userRepository.findById(userId)
@@ -46,7 +46,18 @@ public class UserService implements UserDetailsService {
 	        
 	        return dto;
 	    }
-	    
+
+		public User getUserFromToken(String token){
+			if (!jwtTokenProvider.validateToken(token)) {
+				throw new RuntimeException("Invalid or expired token");
+			}
+
+			String username = jwtTokenProvider.getUsernameFromToken(token);
+			return userRepository.findByUsername(username)
+					.orElseThrow(() -> new RuntimeException("User not found"));
+		}
+
+
 	    public User findUserById(Long userId) {
 	        return userRepository.findById(userId).orElse(null);  // Returns null if user is not found
 	    }
@@ -67,10 +78,10 @@ public class UserService implements UserDetailsService {
 	    	 LocalDate newExpiryDate;
 	    	 
 	    	 if(isAnnual) {
-	    		 newExpiryDate = currentDate.plus(1, ChronoUnit.YEARS);
+	    		 newExpiryDate = currentDate.plusYears(1);
 	    	 }
 	    	 else {
-	    		 newExpiryDate = currentDate.plus(1, ChronoUnit.MONTHS);
+	    		 newExpiryDate = currentDate.plusMonths(1);
 	    	 }
 	    	 
 	        if (user != null) {

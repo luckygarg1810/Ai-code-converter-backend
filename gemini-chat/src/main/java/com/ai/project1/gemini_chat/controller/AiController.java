@@ -1,38 +1,36 @@
 package com.ai.project1.gemini_chat.controller;
 
+import com.ai.project1.gemini_chat.request.QuestionRequest;
+import com.ai.project1.gemini_chat.service.CodeConvertService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.project1.gemini_chat.service.QnaService;
-
 @RestController
-
-@RequestMapping("/api/qna")
+@RequestMapping("/api/")
+@AllArgsConstructor
 public class AiController {
 
-	private final QnaService qnaService;
+	private final CodeConvertService codeConvertService;
 	
-	@PostMapping("/ask")
-	public ResponseEntity<String> askQuestions(@RequestBody Map<String, String> payload,  @RequestHeader(value = "Authorization", required = false) String authorizationHeader){
-	
-		  String token = null;
+	@PostMapping("/convertCode")
+	public ResponseEntity<String> askQuestions(@RequestBody QuestionRequest request,
+											   @RequestHeader(value = "Authorization", required = false)
+											   String authorizationHeader){
 
-	        // Extract token from Authorization header if present
-	        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-	            token = authorizationHeader.replace("Bearer ", "");
-	        }
-		String question = payload.get("question");
-		String answer = qnaService.getAnswer(question, token);
+		String token = extractToken(authorizationHeader);
+		String question = request.getQuestion();
+		String answer = codeConvertService.getAnswer(question, token);
 		return ResponseEntity.ok(answer);
 	}
 
-	public AiController(QnaService qnaService) {
-		this.qnaService = qnaService;
+	private String extractToken(String header) {
+		if (header != null && header.startsWith("Bearer ")) {
+			return header.substring(7);
+		}
+		return null;
 	}
+
 }

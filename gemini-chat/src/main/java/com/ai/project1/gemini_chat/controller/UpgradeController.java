@@ -32,8 +32,6 @@ public class UpgradeController {
 		try {
 			double amount = Double.parseDouble(request.get("amount").toString());
 			String currency = request.get("currency").toString();
-			System.out.println(amount);
-			System.out.println(currency);
 			JSONObject order = razorpayService.createOrder(amount, currency);
 			System.out.println(order.toString());
 			return ResponseEntity.ok(order.toString());
@@ -52,11 +50,8 @@ public class UpgradeController {
 	            String signature = paymentDetails.get("razorpay_signature").toString();
 	            boolean isAnnual = Boolean.parseBoolean(paymentDetails.get("isAnnual").toString());
 	            String planTypeString = (String) paymentDetails.get("planType"); 
-	            
-	            System.out.println("Payment ID: " + paymentId);
-	            System.out.println("Order ID: " + orderId);
-	            System.out.println("Signature: " + signature);  // Check if it prints
-	            
+
+
 	            PlanType planType = PlanType.valueOf(planTypeString.toUpperCase());
 	            
 	     boolean isPaymentValid = razorpayService.verifyPaymentSignature(paymentId, orderId, signature);
