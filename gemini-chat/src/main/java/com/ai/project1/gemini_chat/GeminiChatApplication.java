@@ -20,20 +20,6 @@ public class GeminiChatApplication {
 
 	@Value("${frontend.url}")
 	private String frontendUrl;
-	
-	
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			public void addCorsMappings(CorsRegistry registry) {
-				 registry.addMapping("+/**")
-	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-	                .allowedOrigins(frontendUrl)
-	                .allowedHeaders("*")
-	                .allowCredentials(true);
-			}
 
-		};
-	}
 
 }

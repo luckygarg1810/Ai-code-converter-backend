@@ -1,10 +1,9 @@
 package com.ai.project1.gemini_chat.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
+
 public class QuestionRequest {
     private String question;
 }
